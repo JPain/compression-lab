@@ -65,7 +65,7 @@
 <section class="prose">
   <h3>2. Halve the colour</h3>
   <p>Next, the colour channels are stored at half the width and half the height: one colour value for every square of four pixels. That discards three-quarters of the colour data before anything clever has happened. This is <b>4:2:0 chroma subsampling</b>, the default for standard JPEG, for lossy WebP (where it's the only option) and for AVIF unless you ask otherwise.</p>
-  <p class="note">The notation is a fossil. It comes from the 1982 studio standard for digital video, BT.601, where brightness was sampled at 13.5 MHz, four times a base rate of 3.375 MHz, so the "4" meant four times the base, and "4:2:2" meant colour at half that rate across each line. "4:2:0" kept the notation for colour halved both across and down, although the "0" was never literally zero.</p>
+  <p class="note">The notation is a fossil. "4:2:2" first named an American proposal for digital studio video around 1980 that sampled brightness at four times the NTSC colour subcarrier frequency and colour at twice it. The world settled on 13.5 MHz instead, adopted as the standard now called BT.601 in February 1982, but the label stayed as a ratio. "4:2:0" stretched it to colour halved both across and down, where the "0" was never literally zero. (Stanley Baron and David Wood, <a href="https://tech.ebu.ch/docs/techreview/trev_304-rec601_wood.pdf">"Rec. 601: the origins of the 4:2:2 DTV standard"</a>, EBU Technical Review, 2005.)</p>
 </section>
 <div class="wide">
   <div class="figs two">
@@ -101,7 +101,7 @@
       <tr><td>JPEG XL distance 1.0</td><td class="n">214.8 KB</td><td class="n">0.922</td><td class="n">86.8</td></tr>
     </tbody>
   </table></div>
-  <p>SSIM puts AVIF far ahead of everything and JPEG XL at "visually lossless" barely above JPEG. <b>SSIMULACRA 2</b>, a perceptual metric designed for comparing image codecs, says JPEG XL is well ahead and the other three are within a couple of points of each other. A colour-handling bug in the decoding was the first suspect; checking the average colours ruled it out. The formats are simply tuned against different models of human vision, and SSIM happens to reward some of those choices and punish others. SSIMULACRA 2's results matched what the eye sees in the comparison below, so every score on this page uses it. Its scale: <b>100</b> is identical, <b>90</b> visually lossless, <b>70</b> high quality (hard to spot artifacts without the original beside it), <b>50</b> medium.</p>
+  <p>SSIM puts AVIF far ahead of everything and JPEG XL at "visually lossless" barely above JPEG. <b>SSIMULACRA 2</b>, a perceptual metric designed for comparing image codecs, says JPEG XL is well ahead and the other three are within a couple of points of each other. A colour-handling bug in the decoding was the first suspect; checking the average colours ruled it out. The formats are simply tuned against different models of human vision, and SSIM happens to reward some of those choices and punish others. SSIMULACRA 2's results matched what the eye sees in the comparison below, so every score on this page uses it. Its scale: <b>100</b> is identical, <b>90</b> visually lossless, <b>80</b> very high, <b>70</b> high (artifacts perceptible but not annoying), <b>50</b> medium, in <a href="https://github.com/cloudinary/ssimulacra2">its author's own descriptions</a>.</p>
   <p class="note">One caution: SSIMULACRA 2 was developed by people who also built JPEG XL. That doesn't make it wrong, but for JPEG XL in particular, trust your own eyes in the viewer over the number.</p>
 </section>
 
@@ -118,8 +118,8 @@
       <tr class="hl"><td>AVIF quality 60, full colour</td><td class="n">112.4 KB</td><td class="n">76.9</td></tr>
     </tbody>
   </table></div>
-  <p>Full colour cost JPEG 31% more bytes but AVIF only 16%. AV1, the video codec AVIF is built on, predicts colour from the brightness at the same spot. Colour edges usually line up with brightness edges, so full colour comes nearly free. The ceiling matters most for game graphics: halving colour was designed for photographs and television, where colour changes slowly. Games are full of sharp colour edges, such as a red van against green grass or bright gauge rings on grey.</p>
-  <p>JPEG XL's lead is partly the same story. It never halves colour; it works in a colour space modelled on the eye's cone cells and saves bytes on colour detail the eye can't see instead. It also uses block sizes from 2 × 2 up to 256 × 256, so the sky becomes a few huge cheap blocks while the grass gets small precise ones.</p>
+  <p>Full colour cost JPEG 31% more bytes but AVIF only 16%. AV1, the video codec AVIF is built on, includes a tool that predicts colour from brightness; whether that explains the gap wasn't tested. The ceiling matters most for game graphics: halving colour was designed for photographs and television, where colour changes slowly. Games are full of sharp colour edges, such as a red van against green grass or bright gauge rings on grey.</p>
+  <p>JPEG XL's lead is partly the same story. By default it doesn't halve colour. It works in a colour space, XYB, modelled on the eye's three kinds of cone cell, and can spend fewer bits where the eye is less sensitive instead. Its blocks also vary in size up to 256 × 256, so a smooth sky can be coded in large blocks while grass gets small ones.</p>
 </section>
 
 <section class="wide" aria-labelledby="compare">

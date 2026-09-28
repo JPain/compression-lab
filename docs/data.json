@@ -397,7 +397,7 @@
    "section": "avif",
    "id": "avif_q60_444",
    "label": "AVIF quality 60, full-resolution colour",
-   "note": "4:4:4. AV1 predicts colour from brightness, which keeps full colour cheap.",
+   "note": "4:4:4: full-resolution colour.",
    "bytes": 115111,
    "ratio": 65.1,
    "ms": 383,

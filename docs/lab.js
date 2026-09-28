@@ -8,7 +8,7 @@ const SECTIONS = [
   { id: "colour", title: "Colour resolution", intro: "Only the brightness/colour steps, with no compression, to show what each costs on its own." },
   { id: "jpeg", title: "JPEG", intro: "The long-standing format. Standard JPEG halves colour, like WebP." },
   { id: "avif", title: "AVIF", intro: "Built on the AV1 video codec. Current browsers display it; older iPhones and some link-preview crawlers don't." },
-  { id: "jxl", title: "JPEG XL", intro: "The strongest at high quality here. It never halves colour. Browser support is still patchy." },
+  { id: "jxl", title: "JPEG XL", intro: "The strongest at high quality here. By default it doesn't halve colour. Browser support is still patchy." },
   { id: "resolution", title: "Resolution", intro: "Judged against the 4K original as a 4K screen would show it full-screen: the harshest view. A forum column is narrower than all of these." }
 ];
 const REGIONS = [

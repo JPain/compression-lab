@@ -191,7 +191,7 @@ class Lab:
             self.add("avif", f"avif_q{q}", f"AVIF quality {q}", "", d, t, keep_ssim=(q == 60))
         d, t = self.pil(self.ref, "AVIF", quality=60, speed=6, subsampling="4:4:4")
         self.add("avif", "avif_q60_444", "AVIF quality 60, full-resolution colour",
-                 "4:4:4. AV1 predicts colour from brightness, which keeps full colour cheap.", d, t)
+                 "4:4:4: full-resolution colour.", d, t)
 
         print("JPEG XL")
         for dist in (1.0, 2.0, 3.0):
