@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screenshot Compression Lab</title>
+<meta name="description" content="What happens to a 7.5 MB 4K game screenshot on its way to 128 KB, and how to choose the settings: WebP, JPEG, AVIF and JPEG XL compared side by side with a perceptual metric.">
+<meta name="author" content="Claude Opus 5.5 (Anthropic), for James Pain">
+<meta name="model" content="Claude Opus 5.5">
+<meta name="model_id" content="claude-opus-5-5">
+<meta name="research_model_id" content="claude-opus-5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="page">
+
+<header class="prose">
+  <h1>Screenshot Compression Lab</h1>
+  <p class="lede">A 4K game screenshot is a 7.5&nbsp;MB PNG. The copy posted to a forum is 128&nbsp;KB and looks fine. This is where the other 98% went, how to see what was lost, and how the settings were chosen.</p>
+  <p class="byline">By Claude Opus 5.5, from research with Claude Opus 5, for James Pain · September 2026</p>
+  <div class="headline">
+    <div><b>7.49 MB</b><span>the original PNG</span></div>
+    <div><b>128 KB</b><span>the posted copy</span></div>
+    <div><b>57×</b><span>smaller</span></div>
+    <div><b>72.9</b><span>SSIMULACRA&nbsp;2: high quality</span></div>
+  </div>
+</header>
+
+<section class="prose" aria-labelledby="budget">
+  <h2 id="budget">Where 7 MB goes</h2>
+  <p>James runs a small self-hosted image host for posting screenshots to forums that don't host images themselves. Uploads keep the untouched original and get a compressed copy for posting. The test image throughout is one screenshot from <a href="https://www.squareglade.games/outbound">Outbound</a>, a cosy camper-van game by Square Glade Games: a fire lookout tower on a rocky hillside, a red van, a big blue sky, a compass along the top and the usual on-screen icons.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Step</th><th class="n">Size</th><th class="n">Smaller by</th></tr></thead>
+    <tbody>
+      <tr><td>Raw pixels, 3840 × 2160 × 3 bytes</td><td class="n">24.9 MB</td><td class="n">–</td></tr>
+      <tr><td>The screenshot as a PNG, lossless</td><td class="n">7.49 MB</td><td class="n">3.3×</td></tr>
+      <tr><td>Resized to 1920 × 1080, still lossless</td><td class="n">1.90 MB</td><td class="n">3.9×</td></tr>
+      <tr class="hl"><td>Lossy WebP, quality 82, sharp YUV</td><td class="n">128 KB</td><td class="n">14.5×</td></tr>
+    </tbody>
+  </table></div>
+  <p>A PNG has to reproduce every pixel exactly, and grass, rock and fine texture look almost like noise to it, so a lossless screenshot stays big. Halving the width and height is a plain factor of four. The big step is the last one, where the encoder is allowed to throw information away. Everything below is about that step: what it throws away, where, and how much is too much.</p>
+</section>
+
+<section class="prose" aria-labelledby="how">
+  <h2 id="how">How lossy compression spends the budget</h2>
+  <p>JPEG, WebP and AVIF all start the same way, and it's the step that explains most of what follows. These figures use the bottom-right corner of the screenshot, zoomed so single pixels are visible. <b>Press and hold</b> any figure marked "hold" to swap in the thing it's compared against.</p>
+
+  <h3>1. Split brightness from colour</h3>
+  <p>The image is converted from red, green and blue into one <b>brightness</b> channel and two <b>colour</b> channels. Your eyes resolve fine detail in brightness far better than in colour, and the split shows why that matters: nearly all the detail lives in brightness.</p>
+</section>
+<div class="wide">
+  <div class="figs">
+    <figure><img src="figs/01-original.png" alt="The original crop: a red camper van with a thin blue trim line, grass in front and four white button icons." width="441" height="270" loading="lazy"><figcaption><b>Original</b>, 1920 × 1080 crop</figcaption></figure>
+    <figure><img src="figs/02-brightness.png" alt="Brightness only: a greyscale version in which the grass texture, icons and edges are all fully sharp." width="441" height="270" loading="lazy"><figcaption><b>Brightness</b>. Grass, icons and edges: all the detail is here.</figcaption></figure>
+    <figure><img src="figs/05-colour-full.png" alt="Colour only, shown on mid-grey: soft washes of red, blue and green with little detail." width="441" height="270" loading="lazy"><figcaption><b>Colour</b>, both channels on mid-grey. Soft washes; little detail.</figcaption></figure>
+  </div>
+  <div class="figs two">
+    <figure><img src="figs/03-colour-blue.png" alt="The blue-difference colour channel on its own, at half resolution." width="441" height="270" loading="lazy"><figcaption>The <b>blue-difference</b> channel (Cb) on its own</figcaption></figure>
+    <figure><img src="figs/04-colour-red.png" alt="The red-difference colour channel on its own, at half resolution: the van stands out in pink." width="441" height="270" loading="lazy"><figcaption>The <b>red-difference</b> channel (Cr) on its own</figcaption></figure>
+  </div>
+</div>
+<section class="prose">
+  <h3>2. Halve the colour</h3>
+  <p>Next, the colour channels are stored at half the width and half the height: one colour value for every square of four pixels. That discards three-quarters of the colour data before anything clever has happened. This is <b>4:2:0 chroma subsampling</b>, the default for standard JPEG, for lossy WebP (where it's the only option) and for AVIF unless you ask otherwise.</p>
+  <p class="note">The notation is a fossil. It comes from the 1982 studio standard for digital video, BT.601, where brightness was sampled at 13.5 MHz, four times a base rate of 3.375 MHz, so the "4" meant four times the base, and "4:2:2" meant colour at half that rate across each line. "4:2:0" kept the notation for colour halved both across and down, although the "0" was never literally zero.</p>
+</section>
+<div class="wide">
+  <div class="figs two">
+    <figure class="cmp" tabindex="0" data-a="figs/06-colour-half.png" data-b="figs/05-colour-full.png"><img src="figs/06-colour-half.png" alt="Colour at half resolution: the same washes, now visibly blocky at the edges of the van and trim." width="441" height="270" loading="lazy"><figcaption><b>Colour at half resolution</b> · <span class="holdhint">hold for full resolution</span></figcaption></figure>
+    <figure><img src="figs/05-colour-full.png" alt="Colour at full resolution, for comparison." width="441" height="270" loading="lazy"><figcaption>Colour at full resolution</figcaption></figure>
+  </div>
+</div>
+<section class="prose">
+  <h3>3. Put it back together, and see what's missing</h3>
+  <p>On display, the half-size colour is stretched back up and recombined with the full brightness. Most of the image looks identical. The difference map shows exactly where it isn't: <b>only where colour changes sharply</b>. That's the van's outline, the thin blue trim against red, and grass tips against the paintwork. Flat areas and brightness-only detail, such as the white icons on grey, come through untouched.</p>
+</section>
+<div class="wide">
+  <div class="figs two">
+    <figure class="cmp" tabindex="0" data-a="figs/07-recombined.png" data-b="figs/01-original.png"><img src="figs/07-recombined.png" alt="The recombined image: full brightness with half-resolution colour. Almost identical to the original." width="441" height="270" loading="lazy"><figcaption><b>Recombined</b>, colour halved, nothing else · <span class="holdhint">hold for the original</span></figcaption></figure>
+    <figure><img src="figs/08-difference.png" alt="Difference map, amplified: black almost everywhere, bright lines only along the van's coloured edges and the grass tips against the red." width="441" height="270" loading="lazy"><figcaption><b>Difference</b>, amplified 6×: the loss sits on colour edges</figcaption></figure>
+  </div>
+</div>
+<section class="prose">
+  <h3>4. Blocks, predictions and rounding</h3>
+  <p>Only then does compression proper begin. The encoder cuts the image into blocks and predicts each block from its already-encoded neighbours: "same as the row above", "continue this gradient". Only the difference between prediction and reality is kept. That difference is turned into frequencies, from broad shading to fine detail, and then <b>rounded</b>. The quality setting is the size of that rounding step, and fine detail goes first. The result is packed with an arithmetic coder, and block edges are smoothed on decode.</p>
+  <p>This is why a stylised game compresses so well. The sky is a smooth gradient that prediction gets almost exactly right, so it costs next to nothing. The budget goes to the grass. A photo-realistic game, or anything with film grain, wouldn't shrink nearly as far.</p>
+</section>
+
+<section class="prose" aria-labelledby="measure">
+  <h2 id="measure">Measuring what you can see</h2>
+  <p>Choosing settings needs a number for "how much worse does this look". The classic metric, <b>SSIM</b>, turned out to be badly misleading when comparing different formats:</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Setting</th><th class="n">Size</th><th class="n">SSIM</th><th class="n">SSIMULACRA 2</th></tr></thead>
+    <tbody>
+      <tr><td>JPEG quality 82</td><td class="n">198.9 KB</td><td class="n">0.920</td><td class="n">72.4</td></tr>
+      <tr><td>WebP quality 82</td><td class="n">119.9 KB</td><td class="n">0.937</td><td class="n">70.2</td></tr>
+      <tr><td>AVIF quality 60</td><td class="n">96.8 KB</td><td class="n">0.963</td><td class="n">72.4</td></tr>
+      <tr><td>JPEG XL distance 1.0</td><td class="n">214.8 KB</td><td class="n">0.922</td><td class="n">86.8</td></tr>
+    </tbody>
+  </table></div>
+  <p>SSIM puts AVIF far ahead of everything and JPEG XL at "visually lossless" barely above JPEG. <b>SSIMULACRA 2</b>, a perceptual metric designed for comparing image codecs, says JPEG XL is well ahead and the other three are within a couple of points of each other. A colour-handling bug in the decoding was the first suspect; checking the average colours ruled it out. The formats are simply tuned against different models of human vision, and SSIM happens to reward some of those choices and punish others. SSIMULACRA 2's results matched what the eye sees in the comparison below, so every score on this page uses it. Its scale: <b>100</b> is identical, <b>90</b> visually lossless, <b>70</b> high quality (hard to spot artifacts without the original beside it), <b>50</b> medium.</p>
+  <p class="note">One caution: SSIMULACRA 2 was developed by people who also built JPEG XL. That doesn't make it wrong, but for JPEG XL in particular, trust your own eyes in the viewer over the number.</p>
+</section>
+
+<section class="prose" aria-labelledby="ceiling">
+  <h2 id="ceiling">The colour ceiling</h2>
+  <p>Step 2 turns out to cap everything after it. Applying <b>only</b> the colour halving, with no compression at all, scores <b>79.9</b> on this screenshot. So standard JPEG, lossy WebP and default AVIF can never score much above 80, however high the quality is set. JPEG at quality 100 with halved colour scores 80.1 at 918&nbsp;KB, right against that wall. With full-resolution colour ("4:4:4") the ceiling is <b>92.1</b>. Even converting to brightness-plus-colour and back costs a little through 8-bit rounding, and JPEG 100 with full colour lands on exactly that number.</p>
+  <p>That's why the full-colour settings look so efficient. <b>Spending bytes on colour resolution beats spending them on quality</b>, because more quality refines what's left but can't restore colour discarded before compression started:</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Setting</th><th class="n">Size</th><th class="n">Score</th></tr></thead>
+    <tbody>
+      <tr><td>JPEG quality 90, halved colour</td><td class="n">282.8 KB</td><td class="n">77.3</td></tr>
+      <tr class="hl"><td>JPEG quality 82, full colour</td><td class="n">259.7 KB</td><td class="n">79.7</td></tr>
+      <tr><td>AVIF quality 70, halved colour</td><td class="n">128.8 KB</td><td class="n">75.3</td></tr>
+      <tr class="hl"><td>AVIF quality 60, full colour</td><td class="n">112.4 KB</td><td class="n">76.9</td></tr>
+    </tbody>
+  </table></div>
+  <p>Full colour cost JPEG 31% more bytes but AVIF only 16%. AV1, the video codec AVIF is built on, predicts colour from the brightness at the same spot. Colour edges usually line up with brightness edges, so full colour comes nearly free. The ceiling matters most for game graphics: halving colour was designed for photographs and television, where colour changes slowly. Games are full of sharp colour edges, such as a red van against green grass or bright gauge rings on grey.</p>
+  <p>JPEG XL's lead is partly the same story. It never halves colour; it works in a colour space modelled on the eye's cone cells and saves bytes on colour detail the eye can't see instead. It also uses block sizes from 2 × 2 up to 256 × 256, so the sky becomes a few huge cheap blocks while the grass gets small precise ones.</p>
+</section>
+
+<section class="wide" aria-labelledby="compare">
+  <h2 id="compare">Compare every setting</h2>
+  <p>Thirty-four settings, each with the lossless original on the left. Pick a region on the map, then <b>press and hold</b> any right-hand image (or focus it and hold Space) to swap the original into the same spot. Flicking between the two in place shows differences far better than looking side to side. <b>Sharp</b> shows each pixel as a block when zoomed; <b>Smooth</b> blends them as a browser normally does.</p>
+  <div class="viewer" id="viewer">
+    <figure class="map" id="map">
+      <img src="frame.png" alt="The whole Outbound screenshot: a fire lookout tower on a rocky hillside, a red camper van at bottom right, health gauges at bottom left and a compass along the top. Five outlined regions can be chosen." width="960" height="540">
+    </figure>
+    <div class="legend" id="legend"></div>
+    <nav class="bar" aria-label="Viewer controls">
+      <div class="controls">
+        <div class="group"><span class="label">Region</span><div class="seg" id="regionSeg" role="group" aria-label="Region"></div></div>
+        <div class="group"><span class="label">Zoom</span><div class="seg" id="zoomSeg" role="group" aria-label="Zoom"></div></div>
+        <div class="group"><span class="label">Pixels</span><div class="seg" id="renderSeg" role="group" aria-label="Scaling"></div></div>
+      </div>
+      <div class="jump" id="jump"></div>
+    </nav>
+    <div id="rows"><p class="note">The comparison needs JavaScript. Every image is also in the <code>tiles/</code> folder of the repository.</p></div>
+  </div>
+</section>
+
+<section class="prose" aria-labelledby="choice">
+  <h2 id="choice">What the host uses, and why</h2>
+  <p><b>WebP, quality 82, sharp YUV, 1920 pixels wide:</b> 128&nbsp;KB, score 72.9. The full-size original is kept alongside it under the same name, so either link leads to the other.</p>
+  <ul>
+    <li><b>Quality 82</b> sits where the curve bends. Dropping to 75 saves 27% of the bytes but costs 7.6 points. Going to 90 costs 52% more bytes for 4.9 points. Past 82, each point costs about three times as many bytes as the points below it.</li>
+    <li><b>Sharp YUV</b> is a slower, more careful conversion to brightness and colour before the colour is halved, aimed at exactly the thin coloured edges the difference map lights up. It adds 7% to the size for 2.7 points, a better trade than raising quality to 85 (+14% for 1.7). The output is ordinary WebP: this exact file decodes identically in Chromium, Firefox and WebKit.</li>
+    <li><b>1920 pixels</b> is wider than any forum column and matches most screens. The resolution section of the viewer scores sizes as if seen full-screen on a 4K monitor, the harshest possible view; in a forum post those differences mostly disappear.</li>
+    <li><b>Why not AVIF with full colour?</b> It's the best on the numbers: 112&nbsp;KB and 76.9, smaller and higher than the choice above. But full-colour AVIF uses AV1's less common "High" profile, and the way a format fails matters. A reader whose browser can't decode an image doesn't see a slightly worse picture; they see a broken one. That includes older iPhones and some link-preview crawlers. For images posted where you can't control who reads them, WebP's universal support wins.</li>
+    <li><b>Why not JPEG XL?</b> The best of all at high quality (86.8 at 215&nbsp;KB), but browser support is still too patchy to rely on for forum readers.</li>
+  </ul>
+  <p>Compression happens on the server, not on each uploading device, so a setting changes in one place and any device that can send a file gets the same result. Sharp YUV needs libwebp's own <code>cwebp</code> encoder, because Pillow silently ignores a <code>use_sharp_yuv</code> option (the output bytes are identical with or without it).</p>
+</section>
+
+<section class="prose" aria-labelledby="caveats">
+  <h2 id="caveats">Caveats</h2>
+  <ul>
+    <li><b>One screenshot, one game.</b> Outbound is stylised: flat shading, big gradients. Photo-realistic scenes, grain and noise compress less well, and the best settings shift with content.</li>
+    <li><b>One metric.</b> SSIMULACRA 2 is the best available single number for this, not the last word. The viewer is there so you can disagree with it.</li>
+    <li><b>Encode times</b> are from one run on one machine, a home server, and are for comparing settings with each other only.</li>
+    <li><b>Versions matter.</b> Encoders change. These results used Pillow <span id="v-pillow">12.3.0</span> with libwebp <span id="v-libwebp">1.6.0</span> and libavif <span id="v-libavif">1.4.2</span>, cwebp <span id="v-cwebp">1.3.2</span>, and ffmpeg <span id="v-ffmpeg">6.1.1</span> with libjxl.</li>
+  </ul>
+</section>
+
+<section class="prose" aria-labelledby="reproduce">
+  <h2 id="reproduce">Reproduce it</h2>
+  <p>Every number and image on this page comes from one script, run on one screenshot. Try it on your own:</p>
+<pre>python -m venv .venv
+.venv/bin/pip install -r tools/requirements.txt
+.venv/bin/python tools/generate.py your-screenshot.png --out docs</pre>
+  <p>It needs <code>cwebp</code> (Debian and Ubuntu: <code>apt install webp</code>) and an <code>ffmpeg</code> built with libjxl. The prose on this page describes the Outbound screenshot; with a different image, the tables and viewer update but the text won't.</p>
+</section>
+
+<footer>
+  <p><b>Screenshot:</b> <a href="https://www.squareglade.games/outbound">Outbound</a> © Square Glade Games, captured in play and used here only to illustrate image compression. It isn't covered by this project's licence.</p>
+  <p><b>Written by Claude Opus 5.5</b> (<code>claude-opus-5-5</code>), a model made by Anthropic, from research carried out with Claude Opus 5 (<code>claude-opus-5</code>) for James Pain, who asked the questions, chose the settings and reviewed the page.</p>
+  <p><b>Licence:</b> text and figures CC BY 4.0; code (<code>tools/</code>, <code>lab.js</code>) MIT. If you republish it, a note would be appreciated but isn't required.</p>
+</footer>
+</main>
+<script src="lab.js" defer></script>
+</body>
+</html>

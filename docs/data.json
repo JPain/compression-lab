@@ -1,0 +1,544 @@
+{
+ "source": {
+  "bytes": 7489904,
+  "size": "3840\u00d72160"
+ },
+ "budget": [
+  {
+   "step": "Raw pixels, 3840\u00d72160 \u00d7 3 bytes",
+   "bytes": 24883200
+  },
+  {
+   "step": "The screenshot as a PNG (lossless)",
+   "bytes": 7489904
+  },
+  {
+   "step": "Resized to 1920\u00d71080, still lossless",
+   "bytes": 1904365
+  },
+  {
+   "step": "Lossy WebP, quality 82, sharp YUV",
+   "bytes": 130928
+  }
+ ],
+ "metrics": [
+  {
+   "id": "jpeg_q82",
+   "label": "JPEG quality 82",
+   "bytes": 203662,
+   "ssim": 0.9195,
+   "ssimulacra2": 72.4
+  },
+  {
+   "id": "webp_q82",
+   "label": "WebP quality 82",
+   "bytes": 122728,
+   "ssim": 0.9372,
+   "ssimulacra2": 70.2
+  },
+  {
+   "id": "avif_q60",
+   "label": "AVIF quality 60",
+   "bytes": 99148,
+   "ssim": 0.9625,
+   "ssimulacra2": 72.4
+  },
+  {
+   "id": "jxl_d10",
+   "label": "JPEG XL distance 1.0",
+   "bytes": 219936,
+   "ssim": 0.9222,
+   "ssimulacra2": 86.8
+  }
+ ],
+ "rows": [
+  {
+   "section": "webp-quality",
+   "id": "webp_lossless",
+   "label": "WebP lossless",
+   "note": "Every pixel exact. The ceiling for quality.",
+   "bytes": 1526766,
+   "ratio": 4.9,
+   "ms": 1672,
+   "score": 100.0,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q95",
+   "label": "WebP quality 95",
+   "note": "",
+   "bytes": 300236,
+   "ratio": 24.9,
+   "ms": 393,
+   "score": 77.9,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q90",
+   "label": "WebP quality 90",
+   "note": "",
+   "bytes": 186486,
+   "ratio": 40.2,
+   "ms": 311,
+   "score": 75.1,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q85",
+   "label": "WebP quality 85",
+   "note": "",
+   "bytes": 139608,
+   "ratio": 53.6,
+   "ms": 273,
+   "score": 71.9,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q82",
+   "label": "WebP quality 82",
+   "note": "The host's quality setting. It now adds sharp YUV (next section).",
+   "bytes": 122728,
+   "ratio": 61.0,
+   "ms": 258,
+   "score": 70.2,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false,
+   "ssim": 0.9372
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q80",
+   "label": "WebP quality 80",
+   "note": "",
+   "bytes": 111406,
+   "ratio": 67.2,
+   "ms": 245,
+   "score": 67.3,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q75",
+   "label": "WebP quality 75",
+   "note": "cwebp's own default.",
+   "bytes": 89872,
+   "ratio": 83.3,
+   "ms": 224,
+   "score": 62.6,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q70",
+   "label": "WebP quality 70",
+   "note": "",
+   "bytes": 84738,
+   "ratio": 88.4,
+   "ms": 219,
+   "score": 61.6,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q60",
+   "label": "WebP quality 60",
+   "note": "",
+   "bytes": 73940,
+   "ratio": 101.3,
+   "ms": 207,
+   "score": 57.8,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-quality",
+   "id": "webp_q50",
+   "label": "WebP quality 50",
+   "note": "Where it visibly breaks: grass turns to smears.",
+   "bytes": 64944,
+   "ratio": 115.3,
+   "ms": 193,
+   "score": 53.3,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-options",
+   "id": "webp_m4",
+   "label": "WebP q82, method 4",
+   "note": "Pillow's default effort. Faster to encode than method 6, a little larger.",
+   "bytes": 128868,
+   "ratio": 58.1,
+   "ms": 140,
+   "score": 70.2,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "webp-options",
+   "id": "webp_sharpyuv",
+   "label": "WebP q82, sharp YUV",
+   "note": "A slower, more careful colour conversion before the colour is halved, so thin coloured edges keep their colour. What the host uses. Output is ordinary WebP.",
+   "bytes": 130928,
+   "ratio": 57.2,
+   "ms": 464,
+   "score": 72.9,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": true
+  },
+  {
+   "section": "webp-options",
+   "id": "webp_nl60",
+   "label": "WebP near-lossless 60",
+   "note": "Lossless mode after lightly adjusting hard-to-compress pixels.",
+   "bytes": 1233258,
+   "ratio": 6.1,
+   "ms": 2245,
+   "score": 94.6,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "colour",
+   "id": "ycc_only",
+   "label": "Brightness and colour, nothing removed",
+   "note": "Converted to brightness + colour and back at 8 bits. Rounding alone costs a little: this is the ceiling for every format that works this way.",
+   "bytes": null,
+   "ratio": null,
+   "ms": null,
+   "score": 92.1,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "colour",
+   "id": "sub_only",
+   "label": "Colour halved, nothing else",
+   "note": "Colour stored at half resolution each way (4:2:0), then scaled back up. No compression. The ceiling for standard JPEG, lossy WebP and default AVIF.",
+   "bytes": null,
+   "ratio": null,
+   "ms": null,
+   "score": 79.9,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "colour",
+   "id": "jpeg_q100",
+   "label": "JPEG quality 100",
+   "note": "Maximum quality, halved colour: stopped by the ceiling above.",
+   "bytes": 940585,
+   "ratio": 8.0,
+   "ms": 57,
+   "score": 80.1,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "colour",
+   "id": "jpeg_q100_444",
+   "label": "JPEG quality 100, full-resolution colour",
+   "note": "Maximum quality, full colour: lands on the brightness-and-colour ceiling.",
+   "bytes": 1559407,
+   "ratio": 4.8,
+   "ms": 90,
+   "score": 92.1,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "jpeg",
+   "id": "jpeg_q95",
+   "label": "JPEG quality 95",
+   "note": "",
+   "bytes": 429681,
+   "ratio": 17.4,
+   "ms": 35,
+   "score": 79.1,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "jpeg",
+   "id": "jpeg_q90",
+   "label": "JPEG quality 90",
+   "note": "",
+   "bytes": 289597,
+   "ratio": 25.9,
+   "ms": 29,
+   "score": 77.3,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "jpeg",
+   "id": "jpeg_q82",
+   "label": "JPEG quality 82",
+   "note": "Standard JPEG: colour halved.",
+   "bytes": 203662,
+   "ratio": 36.8,
+   "ms": 25,
+   "score": 72.4,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false,
+   "ssim": 0.9195
+  },
+  {
+   "section": "jpeg",
+   "id": "jpeg_q75",
+   "label": "JPEG quality 75",
+   "note": "",
+   "bytes": 164076,
+   "ratio": 45.6,
+   "ms": 23,
+   "score": 68.4,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "jpeg",
+   "id": "jpeg_q82_444",
+   "label": "JPEG quality 82, full-resolution colour",
+   "note": "4:4:4: larger, but coloured edges keep their colour.",
+   "bytes": 265950,
+   "ratio": 28.2,
+   "ms": 37,
+   "score": 79.7,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "avif",
+   "id": "avif_q80",
+   "label": "AVIF quality 80",
+   "note": "",
+   "bytes": 179329,
+   "ratio": 41.8,
+   "ms": 407,
+   "score": 77.2,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "avif",
+   "id": "avif_q70",
+   "label": "AVIF quality 70",
+   "note": "",
+   "bytes": 131856,
+   "ratio": 56.8,
+   "ms": 355,
+   "score": 75.3,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "avif",
+   "id": "avif_q60",
+   "label": "AVIF quality 60",
+   "note": "",
+   "bytes": 99148,
+   "ratio": 75.5,
+   "ms": 316,
+   "score": 72.4,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false,
+   "ssim": 0.9625
+  },
+  {
+   "section": "avif",
+   "id": "avif_q50",
+   "label": "AVIF quality 50",
+   "note": "",
+   "bytes": 72672,
+   "ratio": 103.1,
+   "ms": 288,
+   "score": 67.5,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "avif",
+   "id": "avif_q60_444",
+   "label": "AVIF quality 60, full-resolution colour",
+   "note": "4:4:4. AV1 predicts colour from brightness, which keeps full colour cheap.",
+   "bytes": 115111,
+   "ratio": 65.1,
+   "ms": 383,
+   "score": 76.9,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "jxl",
+   "id": "jxl_d10",
+   "label": "JPEG XL distance 1.0",
+   "note": "Aimed at visually lossless.",
+   "bytes": 219936,
+   "ratio": 34.1,
+   "ms": 525,
+   "score": 86.8,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false,
+   "ssim": 0.9222
+  },
+  {
+   "section": "jxl",
+   "id": "jxl_d20",
+   "label": "JPEG XL distance 2.0",
+   "note": "",
+   "bytes": 134945,
+   "ratio": 55.5,
+   "ms": 526,
+   "score": 79.8,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "jxl",
+   "id": "jxl_d30",
+   "label": "JPEG XL distance 3.0",
+   "note": "",
+   "bytes": 99150,
+   "ratio": 75.5,
+   "ms": 548,
+   "score": 72.9,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "current": false
+  },
+  {
+   "section": "resolution",
+   "id": "res_3840",
+   "label": "3840\u00d72160, WebP quality 82",
+   "note": "No resize at all.",
+   "bytes": 334764,
+   "ratio": 22.4,
+   "ms": 861,
+   "score": 68.5,
+   "ref": "4k",
+   "dims": "3840\u00d72160",
+   "current": false
+  },
+  {
+   "section": "resolution",
+   "id": "res_2560",
+   "label": "2560\u00d71440, WebP quality 82",
+   "note": "",
+   "bytes": 185330,
+   "ratio": 40.4,
+   "ms": 424,
+   "score": 58.1,
+   "ref": "4k",
+   "dims": "2560\u00d71440",
+   "current": false
+  },
+  {
+   "section": "resolution",
+   "id": "res_1920",
+   "label": "1920\u00d71080, WebP quality 82",
+   "note": "The host's width.",
+   "bytes": 122728,
+   "ratio": 61.0,
+   "ms": 261,
+   "score": 49.0,
+   "ref": "4k",
+   "dims": "1920\u00d71080",
+   "current": true
+  },
+  {
+   "section": "resolution",
+   "id": "res_1280",
+   "label": "1280\u00d7720, WebP quality 82",
+   "note": "Still wider than a forum column.",
+   "bytes": 67860,
+   "ratio": 110.4,
+   "ms": 129,
+   "score": 31.1,
+   "ref": "4k",
+   "dims": "1280\u00d7720",
+   "current": false
+  }
+ ],
+ "regions": {
+  "van": [
+   1479,
+   810,
+   1920,
+   1080
+  ],
+  "sky": [
+   666,
+   18,
+   1107,
+   288
+  ],
+  "tower": [
+   861,
+   540,
+   1302,
+   810
+  ],
+  "trees": [
+   18,
+   204,
+   459,
+   474
+  ],
+  "gauges": [
+   0,
+   810,
+   441,
+   1080
+  ]
+ },
+ "tools": {
+  "pillow": "12.3.0",
+  "libwebp": "1.6.0",
+  "libavif": "1.4.2",
+  "cwebp": "1.3.2",
+  "ffmpeg": "6.1.1-3ubuntu5",
+  "python": "3.11.16",
+  "cpu": "x86_64"
+ },
+ "generated": "2026-09-28"
+}
