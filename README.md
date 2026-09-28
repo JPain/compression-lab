@@ -1,13 +1,13 @@
-# Screenshot Compression Lab
+# Image Compression Lab
 
-What happens to a 7.5 MB 4K game screenshot on its way to 128 KB, and how the
+What happens to a 7.5 MB 4K screenshot on its way to 128 KB, and how the
 settings for a self-hosted image host were chosen: WebP, JPEG, AVIF and JPEG XL
 compared side by side, scored with a perceptual metric, with a viewer that lets
 you hold to swap each setting against the lossless original.
 
-**Read it:** the write-up is [Compressing game screenshots](https://jpain.io/game-screenshot-compression/)
+**Read it:** the write-up is [The colour ceiling hiding in JPEG, WebP and AVIF](https://jpain.io/image-compression-colour-ceiling/)
 on James Pain's blog, and this page is hosted beside it at
-[jpain.io/game-screenshot-compression/lab/](https://jpain.io/game-screenshot-compression/lab/).
+[jpain.io/image-compression-colour-ceiling/lab/](https://jpain.io/image-compression-colour-ceiling/lab/).
 The page is the comparison tool; the post is the explanation. Or run it locally:
 
 ```sh

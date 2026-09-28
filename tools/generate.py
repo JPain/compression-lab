@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Rebuild every image and number on the Screenshot Compression Lab page from one
+Rebuild every image and number on the Image Compression Lab page from one
 screenshot.
 
     python tools/generate.py src/outbound-tower.png           # writes docs/

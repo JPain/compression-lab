@@ -1,4 +1,4 @@
-// Screenshot Compression Lab -- the comparison viewer and the hold-to-compare
+// Image Compression Lab -- the comparison viewer and the hold-to-compare
 // figures. MIT licence. Reads data.json, written by tools/generate.py.
 "use strict";
 
