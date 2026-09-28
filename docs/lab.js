@@ -19,8 +19,8 @@ const REGIONS = [
   { id: "gauges", label: "Health gauges", tests: "bright coloured rings" }
 ];
 const BANDS = [
-  { min: 90, name: "visually lossless", v: "--s-vl" }, { min: 80, name: "very high", v: "--s-vh" },
-  { min: 70, name: "high", v: "--s-hi" }, { min: 50, name: "medium", v: "--s-med" }, { min: -1e9, name: "low", v: "--s-low" }
+  { min: 90, name: "visually lossless", c: "b-vl" }, { min: 80, name: "very high", c: "b-vh" },
+  { min: 70, name: "high", c: "b-hi" }, { min: 50, name: "medium", c: "b-med" }, { min: -1e9, name: "low", c: "b-low" }
 ];
 const ZOOMS = [["fit", "Fit"], ["1", "1×"], ["2", "2×"], ["3", "3×"]];
 const RENDERS = [["pixelated", "Sharp"], ["smooth", "Smooth"]];
@@ -64,6 +64,7 @@ fetch("data.json").then(r => r.json()).then(init).catch(() => {});
 
 function init(data) {
   ROWS = data.rows;
+  if (EMBED.length) return initEmbed(data);
   for (const [k, v] of Object.entries(data.tools || {})) { const el = $("v-" + k); if (el) el.textContent = v; }
 
   const map = $("map");
@@ -75,7 +76,7 @@ function init(data) {
     map.append(b);
   });
   $("legend").innerHTML = `<span>SSIMULACRA 2, 100 = identical:</span>` +
-    [...BANDS].reverse().map(b => `<span><i style="background:var(${b.v})"></i>${b.min > 0 ? b.min + "+" : "below 50"} ${b.name}</span>`).join("");
+    [...BANDS].reverse().map(b => `<span><i class="${b.c}"></i>${b.min > 0 ? b.min + "+" : "below 50"} ${b.name}</span>`).join("");
 
   const seg = (id, items, key) => {
     $(id).innerHTML = items.map(([v, l]) => `<button type="button" data-v="${v}">${l}</button>`).join("");
@@ -101,6 +102,31 @@ function init(data) {
   apply();
 }
 
+// ---- embed mode: ?embed=<row id>[,<row id>]&region=<id> shows just those rows, for a
+// blog post to frame. Viewer settings are not saved, and the frame is told its height.
+const PARAMS = new URLSearchParams(location.search);
+const EMBED = (PARAMS.get("embed") || "").split(",").filter(Boolean);
+
+function initEmbed(data) {
+  const rows = EMBED.map(id => data.rows.find(r => r.id === id)).filter(Boolean);
+  if (!rows.length) return;
+  document.documentElement.classList.add("embed");
+  Object.assign(state, { region: REGIONS.some(r => r.id === PARAMS.get("region")) ? PARAMS.get("region") : "van", zoom: "fit", render: "pixelated", show: "all" });
+  const box = document.createElement("div");
+  box.id = "rows";
+  box.innerHTML = `<div class="embed-bar"><div class="seg" id="regionSeg" role="group" aria-label="Region">${
+    REGIONS.map(r => `<button type="button" data-v="${r.id}" title="${esc(r.tests)}">${r.label}</button>`).join("")}</div>
+    <a href="./" target="_top">All ${data.rows.length} settings in the full lab →</a></div>` + rows.map(row).join("");
+  document.body.replaceChildren(box);
+  box.querySelector("#regionSeg").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (b) { state.region = b.dataset.v; apply(); }
+  });
+  apply();
+  const tell = () => parent.postMessage({ labHeight: Math.ceil(document.documentElement.getBoundingClientRect().height) }, location.origin);
+  new ResizeObserver(tell).observe(document.body);
+  addEventListener("load", tell);
+}
+
 function row(r) {
   const b = band(r.score), ref = r.ref === "4k" ? "ref4k" : "ref1080";
   const size = r.bytes == null ? `<span class="chip">not compressed</span>`
@@ -109,7 +135,7 @@ function row(r) {
     <div class="row-head"><h4>${esc(r.label)}</h4>
       <div class="stats">
         ${r.served ? `<span class="chip now">Served by the host · rank ${r.served}</span>` : ""}
-        <span class="chip score num" style="background:var(${b.v})">${r.score.toFixed(1)} · ${b.name}</span>
+        <span class="chip score num ${b.c}">${r.score.toFixed(1)} · ${b.name}</span>
         ${size}<span class="chip"><b class="num">${r.dims}</b></span>
         ${r.ms == null ? "" : `<span class="chip">encode <b class="num">${r.ms} ms</b></span>`}
       </div>
@@ -167,7 +193,7 @@ function renderShortlist(only) {
     ${picked.map(r => { const b = band(r.score); return `<tr${r.served ? ' class="hl"' : ""}>
       <td><a href="#row-${r.id}">${esc(r.label)}</a>${r.served ? ` <span class="chip now">Served · rank ${r.served}</span>` : ""}</td>
       <td class="n">${r.bytes == null ? "–" : kb(r.bytes)}</td>
-      <td class="n"><span class="chip score num" style="background:var(${b.v})">${r.score.toFixed(1)}</span></td>
+      <td class="n"><span class="chip score num ${b.c}">${r.score.toFixed(1)}</span></td>
       <td class="n">${r.ratio == null ? "–" : Math.round(r.ratio) + "×"}</td>
       <td class="n"><button type="button" class="star small" data-star="${r.id}" aria-label="Remove ${esc(r.label)} from the shortlist">Remove</button></td></tr>`; }).join("")}
     </tbody></table></div>`;
