@@ -20,24 +20,28 @@ cd docs && python3 -m http.server 8000   # then open http://localhost:8000
 |---|---|
 | `docs/` | The page (GitHub Pages serves this folder): `index.html`, `lab.js`, `style.css`, and everything generated |
 | `docs/data.json` | Every setting's size, score and encode time, the size budget, the metric comparison and tool versions |
-| `docs/tiles/` | Lossless PNG crops: five regions × 34 settings, plus references |
+| `docs/tiles/` | Lossless PNG crops: five regions × 35 settings, plus references |
 | `docs/figs/` | The brightness/colour illustration |
 | `tools/generate.py` | Rebuilds all of the above from one screenshot |
 
 ## Findings, in brief
 
 * **Where the bytes go:** 24.9 MB of raw pixels → 7.49 MB lossless PNG →
-  1.90 MB resized to 1920 × 1080 → **128 KB** lossy. The last step is 14.5×.
+  1.90 MB resized to 1920 × 1080 → **112 KB** lossy AVIF. The last step is 16.5×.
 * **Measure with SSIMULACRA 2, not SSIM.** SSIM misranked formats badly here:
   it scored JPEG XL at "visually lossless" barely above plain JPEG.
 * **Halving colour caps quality.** Standard JPEG, lossy WebP and default AVIF
-  store colour at half resolution (4:2:0). On this screenshot that step alone
-  scores 79.9, so none of them can get much above 80. Full colour (4:4:4) lifts
-  the ceiling to 92.1, and spending bytes on colour beats spending them on quality.
-* **Chosen:** WebP quality 82 with sharp YUV at 1920 wide, 128 KB, score 72.9.
-  Full-colour AVIF scores higher at a smaller size, but a reader whose browser
-  can't decode it sees a broken image, so universally supported WebP wins for
-  posting to forums.
+  store colour at half resolution (4:2:0). On this screenshot that step alone,
+  with the ordinary conversion, scores 79.9, so none of them can get much above
+  80. WebP's sharp YUV loses less in the halving and reaches 85.9. Full colour
+  (4:4:4) lifts the ceiling to 92.1, and spending bytes on colour beats spending
+  them on quality.
+* **Chosen:** one `.jpg` link that the host answers with the best copy each
+  browser lists in its `Accept` header: AVIF q60 with full colour (112 KB, 76.9),
+  then JPEG XL d2.5 for Safari 17+ (133 KB, 78.5), then WebP q82 with sharp YUV
+  (128 KB, 72.9), then JPEG q82 with full colour (260 KB, 79.7), which every
+  browser decodes. Apple's browsers never get AVIF: full-colour AVIF needs AV1's
+  High profile, which wasn't tested in Safari.
 
 ## Reproduce
 

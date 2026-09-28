@@ -104,7 +104,7 @@ class Lab:
         return float(re.search(r"All:([\d.]+)", e).group(1))
 
     def add(self, section, vid, label, note="", data=None, dt=None, decoded=None, vs4k=False,
-            current=False, keep_ssim=False):
+            served=None, keep_ssim=False):
         img = decoded if decoded is not None else Image.open(io.BytesIO(data)).convert("RGB")
         path = self.work / f"{vid}.png"
         img.save(path)
@@ -125,7 +125,7 @@ class Lab:
                    bytes=len(data) if data is not None else None,
                    ratio=round(self.src_bytes / len(data), 1) if data else None,
                    ms=round(dt * 1000) if dt is not None else None,
-                   score=round(score, 1), ref=ref, dims=f"{img.width}×{img.height}", current=current)
+                   score=round(score, 1), ref=ref, dims=f"{img.width}×{img.height}", served=served)
         if keep_ssim:
             row["ssim"] = round(self.ssim(path), 4)
         self.rows.append(row)
@@ -145,7 +145,7 @@ class Lab:
         self.add("webp-quality", "webp_lossless", "WebP lossless", "Every pixel exact. The ceiling for quality.", d, t)
         for q in (95, 90, 85, 82, 80, 75, 70, 60, 50):
             d, t = self.pil(self.ref, "WEBP", quality=q, method=6)
-            note = {82: "The host's quality setting. It now adds sharp YUV (next section).",
+            note = {82: "The quality of the host's WebP copy, which adds sharp YUV (next section).",
                     75: "cwebp's own default.", 50: "Where it visibly breaks: grass turns to smears."}.get(q, "")
             self.add("webp-quality", f"webp_q{q}", f"WebP quality {q}", note, d, t, keep_ssim=(q == 82))
 
@@ -156,7 +156,12 @@ class Lab:
         d, t = self.cwebp(["-q", "82", "-m", "6", "-sharp_yuv"])
         self.add("webp-options", "webp_sharpyuv", "WebP q82, sharp YUV",
                  "A slower, more careful colour conversion before the colour is halved, so thin coloured "
-                 "edges keep their colour. What the host uses. Output is ordinary WebP.", d, t, current=True)
+                 "edges keep their colour. The host's copy for browsers that take WebP but not AVIF or "
+                 "JPEG XL. Output is ordinary WebP.", d, t, served=3)
+        d, t = self.cwebp(["-q", "90", "-m", "6", "-sharp_yuv"])
+        self.add("webp-options", "webp_q90_sharpyuv", "WebP q90, sharp YUV",
+                 "Past the 79.9 colour ceiling while still halving colour: that ceiling assumes the "
+                 "ordinary conversion, and sharp YUV loses less in the halving.", d, t)
         d, t = self.cwebp(["-near_lossless", "60", "-m", "6"])
         self.add("webp-options", "webp_nl60", "WebP near-lossless 60",
                  "Lossless mode after lightly adjusting hard-to-compress pixels.", d, t)
@@ -170,7 +175,8 @@ class Lab:
         half = lambda c: c.resize((W // 2, H // 2), Image.BOX).resize((W, H), Image.BILINEAR)
         self.add("colour", "sub_only", "Colour halved, nothing else",
                  "Colour stored at half resolution each way (4:2:0), then scaled back up. No compression. "
-                 "The ceiling for standard JPEG, lossy WebP and default AVIF.",
+                 "The ceiling for standard JPEG, lossy WebP and default AVIF with the ordinary "
+                 "conversion. WebP with sharp YUV gets past it (Other WebP options).",
                  decoded=Image.merge("YCbCr", (y, half(cb), half(cr))).convert("RGB"))
         for sub, vid, label, note in ((2, "jpeg_q100", "JPEG quality 100", "Maximum quality, halved colour: stopped by the ceiling above."),
                                       (0, "jpeg_q100_444", "JPEG quality 100, full-resolution colour", "Maximum quality, full colour: lands on the brightness-and-colour ceiling.")):
@@ -183,7 +189,9 @@ class Lab:
             self.add("jpeg", f"jpeg_q{q}", f"JPEG quality {q}", "Standard JPEG: colour halved." if q == 82 else "",
                      d, t, keep_ssim=(q == 82))
         d, t = self.pil(self.ref, "JPEG", quality=82, subsampling=0, optimize=True, progressive=True)
-        self.add("jpeg", "jpeg_q82_444", "JPEG quality 82, full-resolution colour", "4:4:4: larger, but coloured edges keep their colour.", d, t)
+        self.add("jpeg", "jpeg_q82_444", "JPEG quality 82, full-resolution colour",
+                 "4:4:4: larger, but coloured edges keep their colour. The host's copy for every other "
+                 "browser: every browser decodes JPEG.", d, t, served=4)
 
         print("AVIF")
         for q in (80, 70, 60, 50):
@@ -191,7 +199,8 @@ class Lab:
             self.add("avif", f"avif_q{q}", f"AVIF quality {q}", "", d, t, keep_ssim=(q == 60))
         d, t = self.pil(self.ref, "AVIF", quality=60, speed=6, subsampling="4:4:4")
         self.add("avif", "avif_q60_444", "AVIF quality 60, full-resolution colour",
-                 "4:4:4: full-resolution colour.", d, t)
+                 "4:4:4: full-resolution colour. The host's first choice, sent to browsers that list "
+                 "AVIF, apart from Apple's.", d, t, served=1)
 
         print("JPEG XL")
         for dist in (1.0, 2.0, 3.0):
@@ -206,7 +215,7 @@ class Lab:
             d, t = self.pil(src, "WEBP", quality=82, method=6)
             self.add("resolution", f"res_{w}", f"{w}×{h}, WebP quality 82",
                      {3840: "No resize at all.", 1920: "The host's width.", 1280: "Still wider than a forum column."}.get(w, ""),
-                     d, t, vs4k=True, current=(w == 1920))
+                     d, t, vs4k=True)
 
         print("figures")
         self.figures()
@@ -244,7 +253,7 @@ class Lab:
             {"step": "Raw pixels, 3840×2160 × 3 bytes", "bytes": 3840 * 2160 * 3},
             {"step": "The screenshot as a PNG (lossless)", "bytes": self.src_bytes},
             {"step": "Resized to 1920×1080, still lossless", "bytes": len(ref_png.getvalue())},
-            {"step": "Lossy WebP, quality 82, sharp YUV", "bytes": by["webp_sharpyuv"]["bytes"]},
+            {"step": "AVIF quality 60, full-resolution colour", "bytes": by["avif_q60_444"]["bytes"]},
         ]
         metrics = [{"id": k, "label": by[k]["label"], "bytes": by[k]["bytes"], "ssim": by[k]["ssim"],
                     "ssimulacra2": by[k]["score"]} for k in ("jpeg_q82", "webp_q82", "avif_q60", "jxl_d10")]

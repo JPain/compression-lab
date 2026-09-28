@@ -17,8 +17,8 @@
    "bytes": 1904365
   },
   {
-   "step": "Lossy WebP, quality 82, sharp YUV",
-   "bytes": 130928
+   "step": "AVIF quality 60, full-resolution colour",
+   "bytes": 115111
   }
  ],
  "metrics": [
@@ -59,11 +59,11 @@
    "note": "Every pixel exact. The ceiling for quality.",
    "bytes": 1526766,
    "ratio": 4.9,
-   "ms": 1672,
+   "ms": 1671,
    "score": 100.0,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-quality",
@@ -72,11 +72,11 @@
    "note": "",
    "bytes": 300236,
    "ratio": 24.9,
-   "ms": 393,
+   "ms": 398,
    "score": 77.9,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-quality",
@@ -85,11 +85,11 @@
    "note": "",
    "bytes": 186486,
    "ratio": 40.2,
-   "ms": 311,
+   "ms": 310,
    "score": 75.1,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-quality",
@@ -98,24 +98,24 @@
    "note": "",
    "bytes": 139608,
    "ratio": 53.6,
-   "ms": 273,
+   "ms": 274,
    "score": 71.9,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-quality",
    "id": "webp_q82",
    "label": "WebP quality 82",
-   "note": "The host's quality setting. It now adds sharp YUV (next section).",
+   "note": "The quality of the host's WebP copy, which adds sharp YUV (next section).",
    "bytes": 122728,
    "ratio": 61.0,
-   "ms": 258,
+   "ms": 259,
    "score": 70.2,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false,
+   "served": null,
    "ssim": 0.9372
   },
   {
@@ -125,11 +125,11 @@
    "note": "",
    "bytes": 111406,
    "ratio": 67.2,
-   "ms": 245,
+   "ms": 252,
    "score": 67.3,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-quality",
@@ -138,11 +138,11 @@
    "note": "cwebp's own default.",
    "bytes": 89872,
    "ratio": 83.3,
-   "ms": 224,
+   "ms": 230,
    "score": 62.6,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-quality",
@@ -151,11 +151,11 @@
    "note": "",
    "bytes": 84738,
    "ratio": 88.4,
-   "ms": 219,
+   "ms": 227,
    "score": 61.6,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-quality",
@@ -164,11 +164,11 @@
    "note": "",
    "bytes": 73940,
    "ratio": 101.3,
-   "ms": 207,
+   "ms": 214,
    "score": 57.8,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-quality",
@@ -181,7 +181,7 @@
    "score": 53.3,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-options",
@@ -190,24 +190,37 @@
    "note": "Pillow's default effort. Faster to encode than method 6, a little larger.",
    "bytes": 128868,
    "ratio": 58.1,
-   "ms": 140,
+   "ms": 148,
    "score": 70.2,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "webp-options",
    "id": "webp_sharpyuv",
    "label": "WebP q82, sharp YUV",
-   "note": "A slower, more careful colour conversion before the colour is halved, so thin coloured edges keep their colour. What the host uses. Output is ordinary WebP.",
+   "note": "A slower, more careful colour conversion before the colour is halved, so thin coloured edges keep their colour. The host's copy for browsers that take WebP but not AVIF or JPEG XL. Output is ordinary WebP.",
    "bytes": 130928,
    "ratio": 57.2,
-   "ms": 464,
+   "ms": 468,
    "score": 72.9,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": true
+   "served": 3
+  },
+  {
+   "section": "webp-options",
+   "id": "webp_q90_sharpyuv",
+   "label": "WebP q90, sharp YUV",
+   "note": "Past the 79.9 colour ceiling while still halving colour: that ceiling assumes the ordinary conversion, and sharp YUV loses less in the halving.",
+   "bytes": 196674,
+   "ratio": 38.1,
+   "ms": 520,
+   "score": 80.5,
+   "ref": "1080",
+   "dims": "1920\u00d71080",
+   "served": null
   },
   {
    "section": "webp-options",
@@ -216,11 +229,11 @@
    "note": "Lossless mode after lightly adjusting hard-to-compress pixels.",
    "bytes": 1233258,
    "ratio": 6.1,
-   "ms": 2245,
+   "ms": 2248,
    "score": 94.6,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "colour",
@@ -233,20 +246,20 @@
    "score": 92.1,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "colour",
    "id": "sub_only",
    "label": "Colour halved, nothing else",
-   "note": "Colour stored at half resolution each way (4:2:0), then scaled back up. No compression. The ceiling for standard JPEG, lossy WebP and default AVIF.",
+   "note": "Colour stored at half resolution each way (4:2:0), then scaled back up. No compression. The ceiling for standard JPEG, lossy WebP and default AVIF with the ordinary conversion. WebP with sharp YUV gets past it (Other WebP options).",
    "bytes": null,
    "ratio": null,
    "ms": null,
    "score": 79.9,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "colour",
@@ -259,7 +272,7 @@
    "score": 80.1,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "colour",
@@ -268,11 +281,11 @@
    "note": "Maximum quality, full colour: lands on the brightness-and-colour ceiling.",
    "bytes": 1559407,
    "ratio": 4.8,
-   "ms": 90,
+   "ms": 92,
    "score": 92.1,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "jpeg",
@@ -281,11 +294,11 @@
    "note": "",
    "bytes": 429681,
    "ratio": 17.4,
-   "ms": 35,
+   "ms": 37,
    "score": 79.1,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "jpeg",
@@ -298,7 +311,7 @@
    "score": 77.3,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "jpeg",
@@ -307,11 +320,11 @@
    "note": "Standard JPEG: colour halved.",
    "bytes": 203662,
    "ratio": 36.8,
-   "ms": 25,
+   "ms": 26,
    "score": 72.4,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false,
+   "served": null,
    "ssim": 0.9195
   },
   {
@@ -321,24 +334,24 @@
    "note": "",
    "bytes": 164076,
    "ratio": 45.6,
-   "ms": 23,
+   "ms": 24,
    "score": 68.4,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "jpeg",
    "id": "jpeg_q82_444",
    "label": "JPEG quality 82, full-resolution colour",
-   "note": "4:4:4: larger, but coloured edges keep their colour.",
+   "note": "4:4:4: larger, but coloured edges keep their colour. The host's copy for every other browser: every browser decodes JPEG.",
    "bytes": 265950,
    "ratio": 28.2,
    "ms": 37,
    "score": 79.7,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": 4
   },
   {
    "section": "avif",
@@ -347,11 +360,11 @@
    "note": "",
    "bytes": 179329,
    "ratio": 41.8,
-   "ms": 407,
+   "ms": 416,
    "score": 77.2,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "avif",
@@ -360,11 +373,11 @@
    "note": "",
    "bytes": 131856,
    "ratio": 56.8,
-   "ms": 355,
+   "ms": 350,
    "score": 75.3,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "avif",
@@ -373,11 +386,11 @@
    "note": "",
    "bytes": 99148,
    "ratio": 75.5,
-   "ms": 316,
+   "ms": 323,
    "score": 72.4,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false,
+   "served": null,
    "ssim": 0.9625
   },
   {
@@ -387,24 +400,24 @@
    "note": "",
    "bytes": 72672,
    "ratio": 103.1,
-   "ms": 288,
+   "ms": 289,
    "score": 67.5,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "avif",
    "id": "avif_q60_444",
    "label": "AVIF quality 60, full-resolution colour",
-   "note": "4:4:4: full-resolution colour.",
+   "note": "4:4:4: full-resolution colour. The host's first choice, sent to browsers that list AVIF, apart from Apple's.",
    "bytes": 115111,
    "ratio": 65.1,
-   "ms": 383,
+   "ms": 390,
    "score": 76.9,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": 1
   },
   {
    "section": "jxl",
@@ -413,11 +426,11 @@
    "note": "Aimed at visually lossless.",
    "bytes": 219936,
    "ratio": 34.1,
-   "ms": 525,
+   "ms": 529,
    "score": 86.8,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false,
+   "served": null,
    "ssim": 0.9222
   },
   {
@@ -427,11 +440,11 @@
    "note": "",
    "bytes": 134945,
    "ratio": 55.5,
-   "ms": 526,
+   "ms": 521,
    "score": 79.8,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "jxl",
@@ -444,7 +457,7 @@
    "score": 72.9,
    "ref": "1080",
    "dims": "1920\u00d71080",
-   "current": false
+   "served": null
   },
   {
    "section": "resolution",
@@ -453,11 +466,11 @@
    "note": "No resize at all.",
    "bytes": 334764,
    "ratio": 22.4,
-   "ms": 861,
+   "ms": 865,
    "score": 68.5,
    "ref": "4k",
    "dims": "3840\u00d72160",
-   "current": false
+   "served": null
   },
   {
    "section": "resolution",
@@ -466,11 +479,11 @@
    "note": "",
    "bytes": 185330,
    "ratio": 40.4,
-   "ms": 424,
+   "ms": 426,
    "score": 58.1,
    "ref": "4k",
    "dims": "2560\u00d71440",
-   "current": false
+   "served": null
   },
   {
    "section": "resolution",
@@ -479,11 +492,11 @@
    "note": "The host's width.",
    "bytes": 122728,
    "ratio": 61.0,
-   "ms": 261,
+   "ms": 259,
    "score": 49.0,
    "ref": "4k",
    "dims": "1920\u00d71080",
-   "current": true
+   "served": null
   },
   {
    "section": "resolution",
@@ -492,11 +505,11 @@
    "note": "Still wider than a forum column.",
    "bytes": 67860,
    "ratio": 110.4,
-   "ms": 129,
+   "ms": 130,
    "score": 31.1,
    "ref": "4k",
    "dims": "1280\u00d7720",
-   "current": false
+   "served": null
   }
  ],
  "regions": {

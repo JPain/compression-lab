@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Screenshot Compression Lab</title>
-<meta name="description" content="What happens to a 7.5 MB 4K game screenshot on its way to 128 KB, and how to choose the settings: WebP, JPEG, AVIF and JPEG XL compared side by side with a perceptual metric.">
+<meta name="description" content="What happens to a 7.5 MB 4K game screenshot on its way to 112 KB, and how to choose the settings: WebP, JPEG, AVIF and JPEG XL compared side by side with a perceptual metric.">
 <meta name="author" content="Claude Opus 5.5 (Anthropic), for James Pain">
 <meta name="model" content="Claude Opus 5.5">
 <meta name="model_id" content="claude-opus-5-5">
@@ -19,26 +19,26 @@
 
 <header class="prose">
   <h1>Screenshot Compression Lab</h1>
-  <p class="lede">A 4K game screenshot is a 7.5&nbsp;MB PNG. The copy posted to a forum is 128&nbsp;KB and looks fine. This is where the other 98% went, how to see what was lost, and how the settings were chosen.</p>
+  <p class="lede">A 4K game screenshot is a 7.5&nbsp;MB PNG. The copy most forum readers receive is 112&nbsp;KB and looks fine. This is where the other 98% went, how to see what was lost, and how the settings were chosen.</p>
   <p class="byline">By Claude Opus 5.5, from research with Claude Opus 5, for James Pain · September 2026</p>
   <div class="headline">
     <div><b>7.49 MB</b><span>the original PNG</span></div>
-    <div><b>128 KB</b><span>the posted copy</span></div>
-    <div><b>57×</b><span>smaller</span></div>
-    <div><b>72.9</b><span>SSIMULACRA&nbsp;2: high quality</span></div>
+    <div><b>112 KB</b><span>the copy most readers get</span></div>
+    <div><b>65×</b><span>smaller</span></div>
+    <div><b>76.9</b><span>SSIMULACRA&nbsp;2: high quality</span></div>
   </div>
 </header>
 
 <section class="prose" aria-labelledby="budget">
   <h2 id="budget">Where 7 MB goes</h2>
-  <p>James runs a small self-hosted image host for posting screenshots to forums that don't host images themselves. Uploads keep the untouched original and get a compressed copy for posting. The test image throughout is one screenshot from <a href="https://www.squareglade.games/outbound">Outbound</a>, a cosy camper-van game by Square Glade Games: a fire lookout tower on a rocky hillside, a red van, a big blue sky, a compass along the top and the usual on-screen icons.</p>
+  <p>James runs a small self-hosted image host for posting screenshots to forums that don't host images themselves. Uploads keep the untouched original and get compressed copies in four formats for posting. The test image throughout is one screenshot from <a href="https://www.squareglade.games/outbound">Outbound</a>, a cosy camper-van game by Square Glade Games: a fire lookout tower on a rocky hillside, a red van, a big blue sky, a compass along the top and the usual on-screen icons.</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Step</th><th class="n">Size</th><th class="n">Smaller by</th></tr></thead>
     <tbody>
       <tr><td>Raw pixels, 3840 × 2160 × 3 bytes</td><td class="n">24.9 MB</td><td class="n">–</td></tr>
       <tr><td>The screenshot as a PNG, lossless</td><td class="n">7.49 MB</td><td class="n">3.3×</td></tr>
       <tr><td>Resized to 1920 × 1080, still lossless</td><td class="n">1.90 MB</td><td class="n">3.9×</td></tr>
-      <tr class="hl"><td>Lossy WebP, quality 82, sharp YUV</td><td class="n">128 KB</td><td class="n">14.5×</td></tr>
+      <tr class="hl"><td>AVIF quality 60, full-resolution colour</td><td class="n">112 KB</td><td class="n">16.5×</td></tr>
     </tbody>
   </table></div>
   <p>A PNG has to reproduce every pixel exactly, and grass, rock and fine texture look almost like noise to it, so a lossless screenshot stays big. Halving the width and height is a plain factor of four. The big step is the last one, where the encoder is allowed to throw information away. Everything below is about that step: what it throws away, where, and how much is too much.</p>
@@ -107,7 +107,7 @@
 
 <section class="prose" aria-labelledby="ceiling">
   <h2 id="ceiling">The colour ceiling</h2>
-  <p>Step 2 turns out to cap everything after it. Applying <b>only</b> the colour halving, with no compression at all, scores <b>79.9</b> on this screenshot. So standard JPEG, lossy WebP and default AVIF can never score much above 80, however high the quality is set. JPEG at quality 100 with halved colour scores 80.1 at 918&nbsp;KB, right against that wall. With full-resolution colour ("4:4:4") the ceiling is <b>92.1</b>. Even converting to brightness-plus-colour and back costs a little through 8-bit rounding, and JPEG 100 with full colour lands on exactly that number.</p>
+  <p>Step 2 turns out to cap everything after it. Applying <b>only</b> the colour halving, with no compression at all, scores <b>79.9</b> on this screenshot. So with the ordinary conversion to brightness and colour, standard JPEG, lossy WebP and default AVIF can never score much above 80, however high the quality is set. The exception is WebP's sharp YUV, which loses less in the halving: it passes 80 at quality 90 and reaches 85.9 at 100, where plain WebP stops at 78.3. JPEG at quality 100 with halved colour scores 80.1 at 918&nbsp;KB, right against that wall. With full-resolution colour ("4:4:4") the ceiling is <b>92.1</b>. Even converting to brightness-plus-colour and back costs a little through 8-bit rounding, and JPEG 100 with full colour lands on exactly that number.</p>
   <p>That's why the full-colour settings look so efficient. <b>Spending bytes on colour resolution beats spending them on quality</b>, because more quality refines what's left but can't restore colour discarded before compression started:</p>
   <div class="tablewrap"><table>
     <thead><tr><th>Setting</th><th class="n">Size</th><th class="n">Score</th></tr></thead>
@@ -124,7 +124,7 @@
 
 <section class="wide" aria-labelledby="compare">
   <h2 id="compare">Compare every setting</h2>
-  <p>Thirty-four settings, each with the lossless original on the left. Pick a region on the map, then <b>press and hold</b> any right-hand image (or focus it and hold Space) to swap the original into the same spot. Flicking between the two in place shows differences far better than looking side to side. <b>Sharp</b> shows each pixel as a block when zoomed; <b>Smooth</b> blends them as a browser normally does.</p>
+  <p>Thirty-five settings, each with the lossless original on the left. Pick a region on the map, then <b>press and hold</b> any right-hand image (or focus it and hold Space) to swap the original into the same spot. Flicking between the two in place shows differences far better than looking side to side. <b>Sharp</b> shows each pixel as a block when zoomed; <b>Smooth</b> blends them as a browser normally does. <b>☆ Shortlist</b> on any row collects settings to compare; <b>Show: Shortlist</b> hides the rest. The shortlist is kept in your browser only.</p>
   <div class="viewer" id="viewer">
     <figure class="map" id="map">
       <img src="frame.png" alt="The whole Outbound screenshot: a fire lookout tower on a rocky hillside, a red camper van at bottom right, health gauges at bottom left and a compass along the top. Five outlined regions can be chosen." width="960" height="540">
@@ -135,22 +135,34 @@
         <div class="group"><span class="label">Region</span><div class="seg" id="regionSeg" role="group" aria-label="Region"></div></div>
         <div class="group"><span class="label">Zoom</span><div class="seg" id="zoomSeg" role="group" aria-label="Zoom"></div></div>
         <div class="group"><span class="label">Pixels</span><div class="seg" id="renderSeg" role="group" aria-label="Scaling"></div></div>
+        <div class="group"><span class="label">Show</span><div class="seg" id="showSeg" role="group" aria-label="Show"></div></div>
       </div>
       <div class="jump" id="jump"></div>
     </nav>
+    <section class="shortlist" id="shortlist" aria-label="Shortlist" hidden></section>
     <div id="rows"><p class="note">The comparison needs JavaScript. Every image is also in the <code>tiles/</code> folder of the repository.</p></div>
   </div>
 </section>
 
 <section class="prose" aria-labelledby="choice">
   <h2 id="choice">What the host uses, and why</h2>
-  <p><b>WebP, quality 82, sharp YUV, 1920 pixels wide:</b> 128&nbsp;KB, score 72.9. The full-size original is kept alongside it under the same name, so either link leads to the other.</p>
+  <p><b>One link, the best format each browser can show.</b> Every upload is stored four ways, 1920 pixels wide, beside the untouched original. The link ends in <code>.jpg</code>. The server reads the <code>Accept</code> header every browser sends with an image request and answers with the highest-ranked copy it lists:</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Rank</th><th>Copy</th><th class="n">Size</th><th class="n">Score</th><th>Sent to</th></tr></thead>
+    <tbody>
+      <tr class="hl"><td>1</td><td>AVIF quality 60, full-resolution colour</td><td class="n">112 KB</td><td class="n">76.9</td><td>Browsers that list AVIF, apart from Apple's</td></tr>
+      <tr><td>2</td><td>JPEG XL distance 2.5 (cjxl 0.11)</td><td class="n">133 KB</td><td class="n">78.5</td><td>Browsers that list JPEG XL: Safari 17 and later</td></tr>
+      <tr><td>3</td><td>WebP quality 82, sharp YUV</td><td class="n">128 KB</td><td class="n">72.9</td><td>Browsers that list WebP: Safari 16</td></tr>
+      <tr><td>4</td><td>JPEG quality 82, full-resolution colour</td><td class="n">260 KB</td><td class="n">79.7</td><td>Everything else</td></tr>
+    </tbody>
+  </table></div>
   <ul>
-    <li><b>Quality 82</b> sits where the curve bends. Dropping to 75 saves 27% of the bytes but costs 7.6 points. Going to 90 costs 52% more bytes for 4.9 points. Past 82, each point costs about three times as many bytes as the points below it.</li>
-    <li><b>Sharp YUV</b> is a slower, more careful conversion to brightness and colour before the colour is halved, aimed at exactly the thin coloured edges the difference map lights up. It adds 7% to the size for 2.7 points, a better trade than raising quality to 85 (+14% for 1.7). The output is ordinary WebP: this exact file decodes identically in Chromium, Firefox and WebKit.</li>
+    <li><b>Full-resolution colour first.</b> The colour ceiling makes it the better use of bytes, and AVIF is the smallest way to get it. James chose it on one condition: no reader ever sees a broken image.</li>
+    <li><b>Apple never gets AVIF.</b> Full-colour AVIF needs AV1's less common "High" profile, and <code>Accept</code> says "AVIF" without saying which profiles. This exact file decodes in Chromium, Firefox and Linux WebKit; Safari on an iPhone or Mac wasn't tested. Safari 17 and later list JPEG XL, which keeps full colour by default, so they get that instead.</li>
+    <li><b>The host's JPEG XL isn't the viewer's.</b> The host encodes with <code>cjxl</code> 0.11, which at the same distance makes larger, higher-scoring files than the ffmpeg libjxl used below (distance 2.0: 161&nbsp;KB and 81.7, against 132&nbsp;KB and 79.8). At AVIF's size it scores about the same (121&nbsp;KB, 76.6), so AVIF ranks first: fewer bytes.</li>
+    <li><b>Sharp YUV</b> is a slower, more careful conversion to brightness and colour before the colour is halved, aimed at exactly the thin coloured edges the difference map lights up. At quality 82 it adds 7% to the size for 2.7 points, a better trade than raising quality to 85 (+14% for 1.7), and it lifts WebP past the ordinary colour ceiling at the top end. The output is ordinary WebP: this exact file decodes identically in Chromium, Firefox and WebKit.</li>
+    <li><b>Nothing breaks.</b> Anything that lists none of these gets the JPEG, which every browser decodes, and a copy that doesn't exist falls back to it too.</li>
     <li><b>1920 pixels</b> is wider than any forum column and matches most screens. The resolution section of the viewer scores sizes as if seen full-screen on a 4K monitor, the harshest possible view; in a forum post those differences mostly disappear.</li>
-    <li><b>Why not AVIF with full colour?</b> It's the best on the numbers: 112&nbsp;KB and 76.9, smaller and higher than the choice above. But full-colour AVIF uses AV1's less common "High" profile, and the way a format fails matters. A reader whose browser can't decode an image doesn't see a slightly worse picture; they see a broken one. That includes older iPhones and some link-preview crawlers. For images posted where you can't control who reads them, WebP's universal support wins.</li>
-    <li><b>Why not JPEG XL?</b> The best of all at high quality (86.8 at 215&nbsp;KB), but browser support is still too patchy to rely on for forum readers.</li>
   </ul>
   <p>Compression happens on the server, not on each uploading device, so a setting changes in one place and any device that can send a file gets the same result. Sharp YUV needs libwebp's own <code>cwebp</code> encoder, because Pillow silently ignores a <code>use_sharp_yuv</code> option (the output bytes are identical with or without it).</p>
 </section>

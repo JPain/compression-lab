@@ -24,6 +24,7 @@ const BANDS = [
 ];
 const ZOOMS = [["fit", "Fit"], ["1", "1×"], ["2", "2×"], ["3", "3×"]];
 const RENDERS = [["pixelated", "Sharp"], ["smooth", "Smooth"]];
+const SHOWS = [["all", "All"], ["short", "Shortlist"]];
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -34,7 +35,11 @@ const store = {
   set(k, v) { try { localStorage.setItem("lab." + k, v); } catch {} }
 };
 const pick = (k, list, d) => { const v = store.get(k, d); return list.some(x => (x.id ?? x[0]) === v) ? v : d; };
-const state = { region: pick("region", REGIONS, "van"), zoom: pick("zoom", ZOOMS, "2"), render: pick("render", RENDERS, "pixelated") };
+const state = { region: pick("region", REGIONS, "van"), zoom: pick("zoom", ZOOMS, "2"), render: pick("render", RENDERS, "pixelated"), show: pick("show", SHOWS, "all") };
+// The shortlist is kept in this browser only, like the other viewer settings.
+const shortlist = new Set((() => { try { return JSON.parse(store.get("shortlist", "[]")); } catch { return []; } })());
+const saveShortlist = () => store.set("shortlist", JSON.stringify([...shortlist]));
+let ROWS = [];
 
 // ---- hold to compare: works for the explanation figures and every viewer row
 function hold(fig, on) {
@@ -58,6 +63,7 @@ document.addEventListener("keyup", e => { const f = e.target.closest?.("figure.c
 fetch("data.json").then(r => r.json()).then(init).catch(() => {});
 
 function init(data) {
+  ROWS = data.rows;
   for (const [k, v] of Object.entries(data.tools || {})) { const el = $("v-" + k); if (el) el.textContent = v; }
 
   const map = $("map");
@@ -78,6 +84,13 @@ function init(data) {
   seg("regionSeg", REGIONS.map(r => [r.id, r.label]), "region");
   seg("zoomSeg", ZOOMS, "zoom");
   seg("renderSeg", RENDERS, "render");
+  seg("showSeg", SHOWS, "show");
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-star]"); if (!b) return;
+    const id = b.dataset.star;
+    shortlist.has(id) ? shortlist.delete(id) : shortlist.add(id);
+    saveShortlist(); apply();
+  });
   $("jump").innerHTML = SECTIONS.map(s => `<a href="#v-${s.id}">${s.title}</a>`).join("");
 
   $("rows").innerHTML = SECTIONS.map(sec => `
@@ -92,14 +105,15 @@ function row(r) {
   const b = band(r.score), ref = r.ref === "4k" ? "ref4k" : "ref1080";
   const size = r.bytes == null ? `<span class="chip">not compressed</span>`
     : `<span class="chip"><b class="num">${kb(r.bytes)}</b></span><span class="chip"><b class="num">${Math.round(r.ratio)}×</b> smaller</span>`;
-  return `<article class="row${r.current ? " current" : ""}">
+  return `<article class="row${r.served ? " current" : ""}" id="row-${r.id}" data-row="${r.id}">
     <div class="row-head"><h4>${esc(r.label)}</h4>
       <div class="stats">
-        ${r.current ? `<span class="chip now">The host's setting</span>` : ""}
+        ${r.served ? `<span class="chip now">Served by the host · rank ${r.served}</span>` : ""}
         <span class="chip score num" style="background:var(${b.v})">${r.score.toFixed(1)} · ${b.name}</span>
         ${size}<span class="chip"><b class="num">${r.dims}</b></span>
         ${r.ms == null ? "" : `<span class="chip">encode <b class="num">${r.ms} ms</b></span>`}
-      </div></div>
+      </div>
+      <button type="button" class="star" data-star="${r.id}" aria-pressed="false"><span aria-hidden="true">☆</span> Shortlist</button></div>
     ${r.note ? `<p class="rownote">${esc(r.note)}</p>` : ""}
     <div class="pair">
       <figure class="tile"><img data-id="${ref}" alt="" loading="lazy" decoding="async" width="441" height="270"><figcaption>Original · lossless ${r.ref === "4k" ? "3840 × 2160" : "1920 × 1080"}</figcaption></figure>
@@ -121,7 +135,40 @@ function apply() {
   document.querySelectorAll("[data-region]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.region === state.region)));
   for (const [id, key] of [["regionSeg", "region"], ["zoomSeg", "zoom"], ["renderSeg", "render"]])
     document.querySelectorAll(`#${id} button`).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === state[key])));
+  // shortlist: stars, the Show filter, and the summary table
+  document.querySelectorAll("#rows [data-star]").forEach(b => {
+    const on = shortlist.has(b.dataset.star);
+    b.setAttribute("aria-pressed", String(on));
+    b.innerHTML = `<span aria-hidden="true">${on ? "★" : "☆"}</span> ${on ? "Shortlisted" : "Shortlist"}`;
+    b.closest("article").classList.toggle("starred", on);
+  });
+  const only = state.show === "short";
+  document.querySelectorAll("#rows article[data-row]").forEach(a => a.hidden = only && !shortlist.has(a.dataset.row));
+  document.querySelectorAll("#rows .vsec").forEach(s => s.hidden = only && !s.querySelector("article[data-row]:not([hidden])"));
+  const showBtn = document.querySelector('#showSeg button[data-v="short"]');
+  if (showBtn) showBtn.textContent = `Shortlist (${shortlist.size})`;
+  renderShortlist(only);
   const root = document.documentElement;
   root.style.setProperty("--tile-w", state.zoom === "fit" ? "50%" : `calc(441px * ${state.zoom})`);
   root.classList.toggle("smooth", state.render === "smooth");
+}
+
+function renderShortlist(only) {
+  const box = $("shortlist"); if (!box) return;
+  const picked = ROWS.filter(r => shortlist.has(r.id)).sort((a, b) => (a.bytes ?? Infinity) - (b.bytes ?? Infinity));
+  if (!picked.length) {
+    box.hidden = !only;
+    box.innerHTML = `<p class="note">Nothing shortlisted yet. Press <b>☆ Shortlist</b> on any row to add it.</p>`;
+    return;
+  }
+  box.hidden = false;
+  box.innerHTML = `<h3>Shortlist <span class="note">smallest file first</span></h3>
+    <div class="tablewrap"><table><thead><tr><th>Setting</th><th class="n">Size</th><th class="n">Score</th><th class="n">Smaller by</th><th></th></tr></thead><tbody>
+    ${picked.map(r => { const b = band(r.score); return `<tr${r.served ? ' class="hl"' : ""}>
+      <td><a href="#row-${r.id}">${esc(r.label)}</a>${r.served ? ` <span class="chip now">Served · rank ${r.served}</span>` : ""}</td>
+      <td class="n">${r.bytes == null ? "–" : kb(r.bytes)}</td>
+      <td class="n"><span class="chip score num" style="background:var(${b.v})">${r.score.toFixed(1)}</span></td>
+      <td class="n">${r.ratio == null ? "–" : Math.round(r.ratio) + "×"}</td>
+      <td class="n"><button type="button" class="star small" data-star="${r.id}" aria-label="Remove ${esc(r.label)} from the shortlist">Remove</button></td></tr>`; }).join("")}
+    </tbody></table></div>`;
 }
