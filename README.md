@@ -86,10 +86,7 @@ Measured on 2026-09-28, it reproduced every number the blog post quotes.
   Glade Games, captured in play and used only to illustrate image compression.
   Only crops and a 960-pixel overview are included; the full frame isn't
   redistributed. It isn't covered by this project's licence.
-* **Written by Claude Opus 5.5** (`claude-opus-5-5`), a model made by Anthropic,
-  from research carried out with Claude Opus 5 (`claude-opus-5`) for
-  [James Pain](https://github.com/JPain), who asked the questions, chose the
-  settings and reviewed the result.
+* **By** [James Pain](https://github.com/JPain).
 * **Licence:** text and figures [CC BY 4.0](LICENSE-CONTENT.md); code
   (`tools/`, `docs/lab.js`) [MIT](LICENSE). A note if you republish would be
   appreciated but isn't required.
