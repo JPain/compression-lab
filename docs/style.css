@@ -31,7 +31,9 @@
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.65 var(--sans); padding-inline: 18px; }
-.page { max-width: 1840px; margin-inline: auto; padding-block: 40px 60px; display: grid; gap: 8px; }
+.page { max-width: 1840px; margin-inline: auto; padding-block: 40px 60px; display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
+/* A grid column grows to its widest child's minimum width unless told not to: on a phone that made every section 552px wide. */
+.page > * { min-width: 0; }
 .prose { max-width: 70ch; margin-inline: auto; width: 100%; }
 .wide { max-width: 1100px; margin-inline: auto; width: 100%; }
 h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
@@ -114,7 +116,7 @@ figure.tile img { border-radius: 4px; }
 .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
 footer { border-top: 1px solid var(--line); margin-top: 48px; padding-top: 20px; font-size: 14px; color: var(--muted); }
 footer p { max-width: 90ch; }
-@media (max-width: 560px) { body { font-size: 16px; } .pair { gap: 8px; } figure.tile { max-width: calc(50% - 4px); } .row { padding: 10px; } }
+@media (max-width: 560px) { .headline { display: grid; grid-template-columns: 1fr 1fr; } .headline div { min-width: 0; padding: 10px 12px; } .headline b { font-size: 22px; } body { font-size: 16px; } .pair { gap: 8px; } figure.tile { max-width: calc(50% - 4px); } .row { padding: 10px; } }
 
 /* shortlist */
 .row-head .star { margin-left: auto; }
