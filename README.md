@@ -5,7 +5,7 @@ settings for a self-hosted image host were chosen: WebP, JPEG, AVIF and JPEG XL
 compared side by side, scored with a perceptual metric, with a viewer that lets
 you hold to swap each setting against the lossless original.
 
-**Read it:** the write-up is [Why my smaller image looked better](https://jpain.io/chroma-subsampling/)
+**Read it:** the write-up is [Learning about image compression: chroma subsampling, with interactive demos](https://jpain.io/chroma-subsampling/)
 on James Pain's blog, and this page is hosted beside it at
 [jpain.io/chroma-subsampling/lab/](https://jpain.io/chroma-subsampling/lab/).
 The page is the comparison tool; the post is the explanation. Or run it locally:
